@@ -1,6 +1,6 @@
 <template>
     <div>
-        this is a note pageInfo
+        this is a note pageInfossssssssssss
     </div>
 </template>
 <script>
