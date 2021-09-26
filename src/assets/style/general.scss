@@ -1,0 +1,90 @@
+
+$a4-class-height: 1754px;
+$a4-class-width: 1240px;
+.el-row{
+    padding-bottom: 10px;
+}
+.el-col{
+    padding-right: 10px;
+}
+.a4-horizontal{
+    width: $a4-class-width * 0.4 ;
+    height: $a4-class-height * 0.4 ;
+}
+
+.a4-vertical{
+    width: $a4-class-height * 0.4;
+    height: $a4-class-width * 0.4;
+}
+
+.a4-endwise-default{
+    width: 1075px;
+    height: 1568px;
+    border: 1px #000 solid;
+}
+
+.a4-broadwise-default{
+    width: 1569px;
+    height: 1075px;
+    border: 1px #000 solid;
+}
+.center-center{
+    display: grid;
+    place-items: center;
+    height: 100%;
+}
+@mixin grid-center {
+    display: grid;
+    place-items: center;
+}
+.v-center{
+    display: grid;
+    align-items: center;
+}
+.ml-1{
+    margin-left: 10px;
+}
+.ml-2{
+    margin-left: 20px;
+}
+.pl-1{
+    margin-left: 10px;
+}
+.pl-2{
+    margin-left: 20px;
+}
+.mr-1{
+    margin-right: 10px;
+}
+.mr-2{
+    margin-right: 20px;
+}
+.pr-1{
+    margin-right: 10px;
+}
+.pr-2{
+    margin-right: 20px;
+}
+
+span{
+    display: block;
+}
+.text-center{
+    text-align: center;
+}
+.text-right{
+    text-align: right;
+}
+.text-medium{
+    font-size: 16px;
+}
+.panel-box{
+    border: 1px solid #ebebeb;
+    border-radius: 3px;
+    transition: .2s;
+    background-color: #fff;
+    box-shadow: 0 0 8px 0 rgba(202, 207, 220, 0.6), 0 2px 4px 0 rgba(202, 207, 220, 0.5)
+}
+.pd-2{
+    padding:20px
+}

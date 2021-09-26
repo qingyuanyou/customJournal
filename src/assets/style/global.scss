@@ -1,0 +1,12 @@
+@mixin grid-center {
+    display: grid;
+    place-items: center;
+}
+$main-color: #7E9EFF;
+$total-value: 100%;
+
+@mixin box-common-style{
+    border: 1px solid #d9d9d9;
+    background-color: #fff;
+    box-shadow: 0 0 8px 0 rgba(202, 207, 220, 0.6), 0 2px 4px 0 rgba(202, 207, 220, 0.5)
+}
