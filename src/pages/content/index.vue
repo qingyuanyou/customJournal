@@ -1,6 +1,6 @@
 <template>
     <div class="total-height" >
-        <el-tabs v-model="activeName" type="border-card" class="total-height" closable @edit="tabChangeHandle">
+        <el-tabs v-model="activeName" type="border-card" class="total-height" closable @tab-remove="tabRemoveHandle">
             <el-tab-pane label="主页" name="initPage">
             <!-- 新增 -->
                 <div class='init-panel panel-box pd-2'>
@@ -24,25 +24,30 @@
                 :name="item.pageId"
             >
                 <div class='init-page page-box' :id="item.pageId">
-                    <div :class='{"page": true,"a4-horizontal": !item.isVertical,"a4-vertical": item.isVertical }'>
+                    <div :class='{"page": true,"a4-horizontal": !item.isVertical,"a4-vertical": item.isVertical }'
+                         :style='{"background-color": item.color}'
+                         @ondragover="ondragoverHandle"
+                         @ondrop="ondropHandle"
+                         @ondragenter="ondragenterHandle"
+                    >
                     </div>
                 </div>
             </el-tab-pane>
         </el-tabs>
         <el-dialog title="新建模板" :visible.sync="isShowInitDialog" width='600px'>
             <div class="pr-2">
-                <el-form ref="initForm" :model="initInfo" label-width="120px">
-                 <el-form-item label="模板方向：">
+                <el-form ref="initForm" :model="initInfo" :rules="pageRules" label-width="120px">
+                 <el-form-item label="模板方向：" required>
                     <el-radio-group v-model="initInfo.pageDirection" class="page-radio-group mr-1" >
                         <el-radio label="vertical">横向</el-radio>
                         <el-radio label="horizontal">纵向</el-radio>
                     </el-radio-group>
                 </el-form-item>
-                <el-form-item label="模板名称：">
-                    <el-input v-model="initInfo.pageName"></el-input>
+                <el-form-item label="模板名称：" required>
+                    <el-input v-model="initInfo.pageName" type="text"></el-input>
                 </el-form-item>
                 <el-form-item label="背景颜色：">
-                    <el-color-picker v-model="initInfo.color"></el-color-picker>
+                    <color-panel :colorList="colorList" v-model="initInfo.color" :defaultColor="initInfo.color" @getColorBack="getColorBackHandle"></color-panel>
                 </el-form-item>
             </el-form>
             </div>
@@ -54,27 +59,31 @@
     </div>
 </template>
 <script>
+import colorPanel from '@/components/colorPanel.vue'
 export default {
   name: '',
+  components: {
+    colorPanel
+  },
   data () {
     return {
       activeName: 'initPage',
+      pageRules: {
+        pageDirection: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ],
+        pageName: [
+          { required: true, message: '请输入活动名称', trigger: 'blur' }
+        ]
+      },
       initInfo: {
         pageDirection: 'vertical',
-        isVertical: true,
         pageName: '',
         color: '#fff'
       },
-      pageInfo: [
-        {
-          pageId: 'testPage',
-          pageName: 'testPage',
-          pageDirection: 'vertical',
-          isVertical: true,
-          color: '#fff'
-        }
-      ],
-      isShowInitDialog: false
+      pageInfo: [],
+      isShowInitDialog: false,
+      colorList: ['#ddd', '#e2c0b2', '#aaa']
     }
   },
   methods: {
@@ -82,10 +91,61 @@ export default {
       this.isShowInitDialog = true
     },
     newPageAdd () {
+      this.$refs['initForm'].validate((valid) => {
+        if (!valid) {
+          return false
+        }
+        let myDate = new Date().getTime()
+        let pageId = myDate.toString()
+        this.pageInfo.push({
+          pageId: pageId,
+          pageName: this.initInfo.pageName,
+          pageDirection: this.initInfo.pageDirection,
+          isVertical: !!(this.initInfo.pageDirection == 'vertical'),
+          color: this.initInfo.color
+        })
+        this.initInfo = {
+          pageDirection: 'vertical',
+          pageName: '',
+          color: '#fff'
+        }
+        this.isShowInitDialog = false
+        this.activeName = pageId
+      })
+    },
+    tabChangeHandle (value) {
 
     },
-    tabChangeHandle () {
-
+    tabRemoveHandle (value) {
+      if (value == 'initPage') return
+      let deletedPage = value
+      let oldPageInfo = this.pageInfo
+      if (this.activeName == deletedPage) {
+        oldPageInfo.forEach((item, index) => {
+          if (deletedPage == item.pageId) {
+            let newActiveItem = oldPageInfo[index + 1] || oldPageInfo[index - 1]
+            if (newActiveItem) {
+              this.activeName = newActiveItem.pageId
+            } else {
+              this.activeName = 'initPage'
+            }
+          }
+        })
+      }
+      this.pageInfo = oldPageInfo.filter(item => item.pageId !== deletedPage)
+    },
+    getColorBackHandle (color) {
+      this.initInfo.color = color
+    },
+    ondragoverHandle(event){
+        event.preventDefault()
+        cosnole.log("over")
+    },
+    ondropHandle(){
+        cosnole.log("dropdown")
+    },
+    ondragenterHandle(){
+        cosnole.log("enter")
     }
   }
 }
